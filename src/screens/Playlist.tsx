@@ -17,10 +17,19 @@ import {IPlaylist, usePlaylistStore} from '../zustand/store';
 type Props = NativeStackScreenProps<NavigatorParams, 'Playlist'>;
 
 const Playlist: FunctionComponent<Props> = ({navigation}) => {
+  const setSelectedPlayList = usePlaylistStore(
+    state => state.setSelectedPlayList,
+  );
+
+  const handleListPress = (item: IPlaylist) => {
+    setSelectedPlayList(item);
+    navigation.navigate('PlaylistDetails', item);
+  };
+
   const renderItem: ListRenderItem<IPlaylist> = ({item}) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('PlaylistDetails', item)}
+        onPress={() => handleListPress(item)}
         style={localstyles.playListItem}>
         <Text>{item.title}</Text>
       </TouchableOpacity>
