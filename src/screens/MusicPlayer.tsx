@@ -6,13 +6,10 @@ import {styles} from '../utils/styles';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import {usePlaylistStore} from '../zustand/store';
-import useAsyncStore from '../hooks/useAsyncStore';
-import {LOCALSTORAGEKEYS} from '../utils/localStorageKeys';
 
 type Props = NativeStackScreenProps<NavigatorParams, 'MusicPlayer'>;
 const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   const {title, duration, id} = route.params;
-  const {saveItem} = useAsyncStore();
   const [currentTrackDuration, setCurrentTrackDuration] =
     React.useState<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -98,8 +95,7 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
       id,
     };
     setCurrentTrack(track);
-    saveItem(LOCALSTORAGEKEYS.CURRENT_TRACK, track);
-  }, [title, duration, id, setCurrentTrack, saveItem]);
+  }, [title, duration, id, setCurrentTrack]);
 
   useEffect(() => {
     if (currentTrackDuration >= duration) {
