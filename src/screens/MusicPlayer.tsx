@@ -8,11 +8,13 @@ import Slider from '@react-native-community/slider';
 import {usePlaylistStore} from '../zustand/store';
 
 type Props = NativeStackScreenProps<NavigatorParams, 'MusicPlayer'>;
+
 const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   const {title, duration, id} = route.params;
   const [currentTrackDuration, setCurrentTrackDuration] =
     React.useState<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
   const setCurrentTrack = usePlaylistStore(item => item.setCurrentTrack);
   const setTrackQueue = usePlaylistStore(item => item.setTrackQueue);
   const selectedPlayList = usePlaylistStore(item => item.selectedPlayList);
@@ -37,10 +39,23 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   }, [duration]);
 
   const playSong = useCallback(() => {
-    setIsCurrentlyPlaying(true);
-    setIsPaused(false);
-    startPlaying();
-  }, [setIsCurrentlyPlaying, setIsPaused, startPlaying]);
+    if (currentTrackDuration >= duration) {
+      // If the track has finished, reset and start playing from the beginning
+      setCurrentTrackDuration(0);
+    }
+    if (!isCurrentlyPlaying) {
+      setIsCurrentlyPlaying(true);
+      setIsPaused(false);
+      startPlaying();
+    }
+  }, [
+    currentTrackDuration,
+    duration,
+    isCurrentlyPlaying,
+    setIsCurrentlyPlaying,
+    setIsPaused,
+    startPlaying,
+  ]);
 
   const pauseSong = useCallback(() => {
     setIsPaused(true);
@@ -55,15 +70,16 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
       item => item.id === currentTrack?.id,
     );
     if (selectedPlayList?.songs && currentTrackIndex !== undefined) {
-      // Check if the current track is the last one in the playlist
       if (currentTrackIndex < selectedPlayList.songs.length - 1) {
         const nextTrack = selectedPlayList.songs[currentTrackIndex + 1];
         setCurrentTrack(nextTrack);
         setCurrentTrackDuration(0);
         setTrackQueue(selectedPlayList?.songs);
       } else {
-        // Stop playback if it's the last track in the queue
+        // Reset the track duration and stop playing if it's the last track
         setCurrentTrackDuration(duration);
+        setIsCurrentlyPlaying(false);
+        setIsPaused(false);
       }
     }
   }, [
@@ -72,6 +88,8 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
     setCurrentTrack,
     setTrackQueue,
     duration,
+    setIsCurrentlyPlaying,
+    setIsPaused,
   ]);
 
   const previous = useCallback(() => {
