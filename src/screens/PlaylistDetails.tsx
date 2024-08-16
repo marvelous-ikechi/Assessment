@@ -22,11 +22,19 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
   const setSelectedPlayList = usePlaylistStore(
     item => item.setSelectedPlayList,
   );
+  const selectedPlayList = usePlaylistStore(item => item.selectedPlayList);
+
   const currentTrack = usePlaylistStore(item => item.currentTrack);
+  const deleteItemFromPlayList = usePlaylistStore(
+    item => item.removeSongFromPlaylist,
+  );
 
   const renderItem: ListRenderItem<ISong> = ({item}) => {
     return (
       <TouchableOpacity
+        onLongPress={() =>
+          deleteItemFromPlayList(selectedPlayList?.id, item.id)
+        }
         onPress={() => navigation.navigate('MusicPlayer', item)}
         style={styles.listItem}>
         <Text>{item.title}</Text>
@@ -66,7 +74,7 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={songs}
+        data={selectedPlayList?.songs}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
