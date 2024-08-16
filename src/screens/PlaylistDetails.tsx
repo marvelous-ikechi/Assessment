@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect} from 'react';
+import React, {FunctionComponent} from 'react';
 import {
   FlatList,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ListRenderItem,
+  Pressable,
 } from 'react-native';
 import {styles} from '../utils/styles';
 import {NavigatorParams} from '../navigation/types/navigationTypes';
@@ -17,7 +18,7 @@ import BottomPlayer from '../components/BottomPlayer';
 
 type Props = NativeStackScreenProps<NavigatorParams, 'PlaylistDetails'>;
 const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
-  const {id, title, songs} = route.params;
+  const {id, title} = route.params;
 
   const setSelectedPlayList = usePlaylistStore(
     item => item.setSelectedPlayList,
@@ -29,26 +30,68 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
     item => item.removeSongFromPlaylist,
   );
 
-  const renderItem: ListRenderItem<ISong> = ({item}) => {
+  const moveSongUp = (index: number) => {
+    if (selectedPlayList && index > 0) {
+      if (selectedPlayList.songs) {
+        const newSongs = [...selectedPlayList.songs];
+        [newSongs[index], newSongs[index - 1]] = [
+          newSongs[index - 1],
+          newSongs[index],
+        ];
+        setSelectedPlayList({...selectedPlayList, songs: newSongs});
+      }
+    }
+  };
+
+  // Function to move a song down in the list
+  const moveSongDown = (index: number) => {
+    if (selectedPlayList.songs) {
+      if (selectedPlayList && index < selectedPlayList.songs.length - 1) {
+        const newSongs = [...selectedPlayList.songs];
+        [newSongs[index], newSongs[index + 1]] = [
+          newSongs[index + 1],
+          newSongs[index],
+        ];
+        setSelectedPlayList({...selectedPlayList, songs: newSongs});
+      }
+    }
+  };
+  const renderItem: ListRenderItem<ISong> = ({item, index}) => {
     return (
-      <TouchableOpacity
+      <Pressable
         onLongPress={() =>
           deleteItemFromPlayList(selectedPlayList?.id, item.id)
         }
-        onPress={() => navigation.navigate('MusicPlayer', item)}
-        style={styles.listItem}>
-        <Text>{item.title}</Text>
-      </TouchableOpacity>
+        style={[styles.listItem, styles.row]}>
+        <TouchableOpacity
+          style={localstyles.songItem}
+          onPress={() => navigation.navigate('MusicPlayer', item)}>
+          <Text>{item.title}</Text>
+        </TouchableOpacity>
+        <View>
+          {index !== 0 && (
+            <TouchableOpacity onPress={() => moveSongUp(index)}>
+              <MaterialCommunityIcon
+                name="chevron-up"
+                size={20}
+                color={'black'}
+              />
+            </TouchableOpacity>
+          )}
+          {selectedPlayList?.songs &&
+            index !== selectedPlayList?.songs?.length - 1 && (
+              <TouchableOpacity onPress={() => moveSongDown(index)}>
+                <MaterialCommunityIcon
+                  name="chevron-down"
+                  size={20}
+                  color={'black'}
+                />
+              </TouchableOpacity>
+            )}
+        </View>
+      </Pressable>
     );
   };
-
-  useEffect(() => {
-    setSelectedPlayList({
-      id,
-      title,
-      songs,
-    });
-  }, [id, title, songs, setSelectedPlayList]);
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -96,6 +139,9 @@ const localstyles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
+  },
+  songItem: {
+    width: '80%',
   },
 });
 
