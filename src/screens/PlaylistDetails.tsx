@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, {FunctionComponent, useEffect} from 'react';
 import {
   FlatList,
   Text,
@@ -12,11 +12,15 @@ import {styles} from '../utils/styles';
 import {NavigatorParams} from '../navigation/types/navigationTypes';
 import {NativeStackScreenProps} from 'react-native-screens/lib/typescript/native-stack/types';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ISong} from '../zustand/store';
+import {ISong, usePlaylistStore} from '../zustand/store';
 
 type Props = NativeStackScreenProps<NavigatorParams, 'PlaylistDetails'>;
 const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
   const {id, title, songs} = route.params;
+
+  const setSelectedPlayList = usePlaylistStore(
+    item => item.setSelectedPlayList,
+  );
 
   const renderItem: ListRenderItem<ISong> = ({item}) => {
     return (
@@ -27,6 +31,14 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
       </TouchableOpacity>
     );
   };
+
+  useEffect(() => {
+    setSelectedPlayList({
+      id,
+      title,
+      songs,
+    });
+  }, [id, title, songs, setSelectedPlayList]);
 
   return (
     <SafeAreaView style={styles.wrapper}>
