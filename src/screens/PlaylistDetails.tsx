@@ -13,6 +13,7 @@ import {NavigatorParams} from '../navigation/types/navigationTypes';
 import {NativeStackScreenProps} from 'react-native-screens/lib/typescript/native-stack/types';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ISong, usePlaylistStore} from '../zustand/store';
+import BottomPlayer from '../components/BottomPlayer';
 
 type Props = NativeStackScreenProps<NavigatorParams, 'PlaylistDetails'>;
 const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
@@ -21,6 +22,7 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
   const setSelectedPlayList = usePlaylistStore(
     item => item.setSelectedPlayList,
   );
+  const currentTrack = usePlaylistStore(item => item.currentTrack);
 
   const renderItem: ListRenderItem<ISong> = ({item}) => {
     return (
@@ -68,6 +70,7 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
       />
+      {currentTrack && <BottomPlayer />}
     </SafeAreaView>
   );
 };
