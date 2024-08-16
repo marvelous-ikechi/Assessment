@@ -3,7 +3,7 @@ import {create} from 'zustand';
 export interface ISong {
   id: number;
   title: string;
-  duration: string;
+  duration: number;
 }
 
 export interface IPlaylist {
