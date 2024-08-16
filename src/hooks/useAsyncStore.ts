@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {LOCALSTORAGEKEYS} from '../utils/localStorageKeys';
 
 const useAsyncStore = () => {
-  const saveItem = async (key: string, value: any) => {
+  const saveItem = async (key: LOCALSTORAGEKEYS, value: any) => {
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
@@ -9,7 +10,7 @@ const useAsyncStore = () => {
     }
   };
 
-  const getItem = async (key: string): Promise<string | null> => {
+  const getItem = async (key: LOCALSTORAGEKEYS): Promise<string | null> => {
     try {
       const value = await AsyncStorage.getItem(key);
       return value ? JSON.parse(value) : null;
