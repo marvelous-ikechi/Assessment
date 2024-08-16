@@ -6,6 +6,7 @@ import Playlist from '../screens/Playlist';
 import AddPlaylist from '../screens/AddPlaylist';
 import AddSong from '../screens/AddSong';
 import PlaylistDetails from '../screens/PlaylistDetails';
+import MusicPlayer from '../screens/MusicPlayer';
 
 const Stack = createStackNavigator<NavigatorParams>();
 
@@ -32,6 +33,11 @@ const Navigator: FunctionComponent = () => {
           options={{headerShown: false}}
           name="PlaylistDetails"
           component={PlaylistDetails}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="MusicPlayer"
+          component={MusicPlayer}
         />
       </Stack.Navigator>
     </NavigationContainer>
