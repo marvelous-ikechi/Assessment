@@ -1,4 +1,4 @@
-import {IPlaylist} from '../../zustand/store';
+import {IPlaylist, ISong} from '../../zustand/store';
 
 export type NavigatorParams = {
   Playlist: undefined;
@@ -7,4 +7,5 @@ export type NavigatorParams = {
     playlistId: number;
   };
   PlaylistDetails: IPlaylist;
+  MusicPlayer: ISong;
 };
