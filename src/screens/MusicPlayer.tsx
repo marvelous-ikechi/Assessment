@@ -23,6 +23,7 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   );
   const isPaused = usePlaylistStore(item => item.isPaused);
   const setIsPaused = usePlaylistStore(item => item.setIsPaused);
+  const isCurrentlyPlaying = usePlaylistStore(item => item.isCurrentlyPlaying);
 
   const startPlaying = useCallback(() => {
     intervalRef.current = setInterval(() => {
@@ -140,21 +141,23 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
             size={30}
             color="black"
           />
-          {isPaused ? (
-            <MaterialCommunityIcon
-              onPress={playSong}
-              name="play"
-              size={30}
-              color="black"
-            />
-          ) : (
+
+          {isCurrentlyPlaying ? (
             <MaterialCommunityIcon
               onPress={pauseSong}
               name="pause"
               size={30}
               color="black"
             />
+          ) : (
+            <MaterialCommunityIcon
+              onPress={playSong}
+              name="play"
+              size={30}
+              color="black"
+            />
           )}
+
           <MaterialCommunityIcon
             onPress={next}
             name="skip-next"
