@@ -22,6 +22,10 @@ export interface IPlaylistStore {
   setCurrentTrack: (song: ISong) => void;
   trackQueue: ISong[] | null;
   setTrackQueue: (song: ISong[]) => void;
+  isCurrentlyPlaying: boolean;
+  setIsCurrentlyPlaying: (isPlaying: boolean) => void;
+  isPaused: boolean;
+  setIsPaused: (isPaused: boolean) => void;
 }
 
 export const usePlaylistStore = create<IPlaylistStore>(set => ({
@@ -46,4 +50,9 @@ export const usePlaylistStore = create<IPlaylistStore>(set => ({
   setCurrentTrack: (song: ISong) => set({currentTrack: song}),
   trackQueue: [],
   setTrackQueue: (song: ISong[]) => set({trackQueue: song}),
+  isCurrentlyPlaying: false,
+  setIsCurrentlyPlaying: (isPlaying: boolean) =>
+    set({isCurrentlyPlaying: isPlaying}),
+  isPaused: false,
+  setIsPaused: (isPaused: boolean) => set({isPaused: isPaused}),
 }));
