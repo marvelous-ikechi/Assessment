@@ -20,7 +20,9 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
 
   const renderItem: ListRenderItem<ISong> = ({item}) => {
     return (
-      <TouchableOpacity style={styles.listItem}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('MusicPlayer', item)}
+        style={styles.listItem}>
         <Text>{item.title}</Text>
       </TouchableOpacity>
     );
