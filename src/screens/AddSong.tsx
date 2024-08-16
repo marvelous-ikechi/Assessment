@@ -24,7 +24,7 @@ const AddSong: FunctionComponent<Props> = ({navigation, route}) => {
     const newSong = {
       id: songs.length + 1,
       title: songTitle,
-      duration: 5,
+      duration: 3,
     };
     addSongToPlaylist(playlistId, newSong);
     navigation.navigate('Playlist');
