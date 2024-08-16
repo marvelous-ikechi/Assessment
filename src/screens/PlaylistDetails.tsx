@@ -115,13 +115,14 @@ const PlaylistDetails: FunctionComponent<Props> = ({navigation, route}) => {
           }>
           <Text style={localstyles.buttonText}>Add Song</Text>
         </TouchableOpacity>
+        <FlatList
+          data={selectedPlayList?.songs}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+          contentContainerStyle={localstyles.contentContainerStyle}
+        />
+        {currentTrack && <BottomPlayer />}
       </View>
-      <FlatList
-        data={selectedPlayList?.songs}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-      />
-      {currentTrack && <BottomPlayer />}
     </SafeAreaView>
   );
 };
@@ -142,6 +143,9 @@ const localstyles = StyleSheet.create({
   },
   songItem: {
     width: '80%',
+  },
+  contentContainerStyle: {
+    marginTop: 30,
   },
 });
 
