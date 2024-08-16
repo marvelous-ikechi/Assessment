@@ -20,6 +20,8 @@ export interface IPlaylistStore {
   selectedPlayList: IPlaylist | null;
   currentTrack: ISong | null;
   setCurrentTrack: (song: ISong) => void;
+  trackQueue: ISong[] | null;
+  setTrackQueue: (song: ISong[]) => void;
 }
 
 export const usePlaylistStore = create<IPlaylistStore>(set => ({
@@ -42,4 +44,6 @@ export const usePlaylistStore = create<IPlaylistStore>(set => ({
     set({selectedPlayList: playlist}),
   currentTrack: null,
   setCurrentTrack: (song: ISong) => set({currentTrack: song}),
+  trackQueue: [],
+  setTrackQueue: (song: ISong[]) => set({trackQueue: song}),
 }));
