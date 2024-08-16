@@ -6,14 +6,16 @@ import {styles} from '../utils/styles';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import {usePlaylistStore} from '../zustand/store';
+import useAsyncStore from '../hooks/useAsyncStore';
+import {LOCALSTORAGEKEYS} from '../utils/localStorageKeys';
 
 type Props = NativeStackScreenProps<NavigatorParams, 'MusicPlayer'>;
 const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   const {title, duration, id} = route.params;
+  const {saveItem} = useAsyncStore();
   const [currentTrackDuration, setCurrentTrackDuration] =
     React.useState<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
   const setCurrentTrack = usePlaylistStore(item => item.setCurrentTrack);
   const setTrackQueue = usePlaylistStore(item => item.setTrackQueue);
   const selectedPlayList = usePlaylistStore(item => item.selectedPlayList);
@@ -21,7 +23,6 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   const setIsCurrentlyPlaying = usePlaylistStore(
     item => item.setIsCurrentlyPlaying,
   );
-  const isPaused = usePlaylistStore(item => item.isPaused);
   const setIsPaused = usePlaylistStore(item => item.setIsPaused);
   const isCurrentlyPlaying = usePlaylistStore(item => item.isCurrentlyPlaying);
 
@@ -91,12 +92,14 @@ const MusicPlayer: FunctionComponent<Props> = ({navigation, route}) => {
   }, [currentTrack, selectedPlayList, setCurrentTrack, setTrackQueue]);
 
   useEffect(() => {
-    setCurrentTrack({
+    const track = {
       title,
       duration,
       id,
-    });
-  }, [title, duration, id, setCurrentTrack]);
+    };
+    setCurrentTrack(track);
+    saveItem(LOCALSTORAGEKEYS.CURRENT_TRACK, track);
+  }, [title, duration, id, setCurrentTrack, saveItem]);
 
   useEffect(() => {
     if (currentTrackDuration >= duration) {
